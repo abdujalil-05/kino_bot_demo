@@ -12,7 +12,7 @@ class Core:
                 username VARCHAR(200),
                 name VARCHAR(200) NOT NULL,
                 user_id BIGINT NOT NULL,
-                subscription TEXT
+                channels TEXT
             )
             '''
         )
