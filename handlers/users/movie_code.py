@@ -13,12 +13,9 @@ patterns = r"^\d+$"
 
 @router.message(IsPrivateChat())
 async def movie_code_handler(message: Message):
-    print("aaaaaaaaa")
     if re.match(patterns, message.text):
-        print("if           1")
         data = movies.get_movie(message.text)
         if data:
-            print(data)
             if data[1]:
                 language = ""
                 if data[0][3] == "uzbek":
