@@ -17,34 +17,20 @@ channel_id = None
 async def private_channel_handler(call: CallbackQuery, state: FSMContext, bot: Bot):
     bot_channels = channels_db.get_bot_channels()
     userId = call.from_user.id
-    print(bot_channels)
     user_bot_channels = []
-    print(f"{bot_channels} botning kanallari")
     try:
         for channel in bot_channels:
-            print("2")
             try:
                 admins = await bot.get_chat_administrators(channel[2])
-                print(f"{len(admins)} ta admin topildi ------------>")
-
                 for admin in admins:
-                    print(f"admin {admin.user.id} | user id {userId}")
                     if userId == admin.user.id:
                         user_bot_channels.append(channel)
-                        print(f"✅ User admin bo‘ldi: {channel}")
             except Exception as e:
                 print("⚠️ Bot bu chatda admin emas yoki xato: ", e)
-
-        print("3")
-        
-        if not user_bot_channels:
-            print("❌ User hech qaysi chatda admin emas")
 
     except Exception as e:
         print("❌ Xato: ", e)
         await call.message.answer("⚠️ Bot guruhda admin emas")
-
-    print(f"{user_bot_channels} user bot channels")
 
     if user_bot_channels:
         keyboard = admin_channels_menu_generate(channels=user_bot_channels)
@@ -81,7 +67,6 @@ async def add_channel_yes(message: Message, state: FSMContext):
     await message.answer("Muvaffaqiyatli qo'shildi ✅", reply_markup=ReplyKeyboardRemove())
     data = await state.get_data()
     await state.clear()
-    print(data)
     channels_db.add_channel(channel_link=data["channel_link"], name=data["channel_name"], channel_id=data["channel_id"])
 
 
@@ -105,4 +90,3 @@ async def get_channel_link(message: Message, state: FSMContext):
 @router.message(Command("get_channel"))
 async def get_channel(message: Message):
     channels = channels_db.get_channels()
-    print(channels)
