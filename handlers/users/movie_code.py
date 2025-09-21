@@ -13,7 +13,8 @@ patterns = r"^\d+$"
 
 @router.message(IsPrivateChat())
 async def movie_code_handler(message: Message):
-    if re.match(patterns, message.text):
+    message_text = message.text or ""
+    if re.match(patterns, message_text):
         data = movies.get_movie(message.text)
         if data:
             if data[1]:
