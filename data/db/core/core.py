@@ -1,26 +1,9 @@
-from mysql.connector import pooling
-import os
+from data.db.connection.connection import get_connection
 
 class Core:
     def __init__(self):
-        DB_CONFIG = {
-            "host": os.getenv("MYSQL_HOST"),
-            "user": os.getenv("MYSQL_USER"),
-            "password": os.getenv("MYSQL_PASSWORD"),
-            "database": os.getenv("MYSQL_DATABASE"),
-            "port": int(os.getenv("MYSQL_PORT", 3306))
-        }
-
-        # Connection pool yaratish
-        self.pool = pooling.MySQLConnectionPool(
-            pool_name="mypool",
-            pool_size=20,   # pooldagi maksimal connection soni
-            pool_reset_session=True,
-            **DB_CONFIG
-        )
-
         # Jadval yaratish uchun connection olish
-        conn = self.pool.get_connection()
+        conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
             '''
@@ -67,7 +50,3 @@ class Core:
         conn.commit()
         cursor.close()
         conn.close()
-
-    # Helper method: pool'dan connection olish
-    def get_connection(self):
-        return self.pool.get_connection()

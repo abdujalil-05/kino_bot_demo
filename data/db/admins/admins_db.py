@@ -1,9 +1,7 @@
-from ..core.core import Core
-
-core = Core()
+from ..connection.connection import get_connection
 
 def get_bot_admins():
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM bot_admins")
     data = cursor.fetchall()
@@ -12,7 +10,7 @@ def get_bot_admins():
     return data
 
 def add_admin(admin_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "SELECT * FROM users WHERE user_id = %s", (admin_id,)
@@ -38,7 +36,7 @@ def add_admin(admin_id):
     conn.close()
 
 def delete_admin(admin_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "DELETE FROM bot_admins WHERE admin_id = %s",

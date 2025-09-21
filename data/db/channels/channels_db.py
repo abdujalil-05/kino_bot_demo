@@ -1,9 +1,7 @@
-from ..core.core import Core
-
-core = Core()
+from ..connection.connection import get_connection
 
 def add_channel(channel_link, name, channel_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO channels (channels, name, channel_id) VALUES (%s, %s, %s)",
@@ -14,7 +12,7 @@ def add_channel(channel_link, name, channel_id):
     conn.close()
 
 def get_channels():
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM channels")
     data = cursor.fetchall()
@@ -23,7 +21,7 @@ def get_channels():
     return data
 
 def delete_channel(channel_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         f"DELETE FROM channels WHERE channel_id = {channel_id}",
@@ -34,7 +32,7 @@ def delete_channel(channel_id):
     conn.close()
 
 def delete_user_left_channel(user_id, channels):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         f"UPDATE users SET channels = %s WHERE user_id = %s",
@@ -42,7 +40,7 @@ def delete_user_left_channel(user_id, channels):
     )
 
 def add_bot_channel(channel_name, channel_id, username, channel_users_count):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO bot_in_channels (channel_name, channel_id, username, channel_users_count) VALUES (%s, %s, %s, %s)",
@@ -53,7 +51,7 @@ def add_bot_channel(channel_name, channel_id, username, channel_users_count):
     conn.close()
 
 def get_bot_channels():
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM bot_in_channels")
     data = cursor.fetchall()
@@ -62,7 +60,7 @@ def get_bot_channels():
     return data
 
 def update_channel_users(channel_id, count):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "UPDATE bot_in_channels SET channel_users_count = %s WHERE channel_id = %s",

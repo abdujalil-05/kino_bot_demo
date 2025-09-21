@@ -83,7 +83,8 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
                 if channel in not_subscribed:
                     not_subscribed.remove(channel)
 
-
+        print(not_subscribed)
+        print(user_channels)
 
         # ✅ Agar hamma joyga obuna bo‘lsa
         if not not_subscribed:

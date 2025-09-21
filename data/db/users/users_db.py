@@ -1,9 +1,7 @@
-from ..core.core import Core
-
-core = Core()
+from ..connection.connection import get_connection
 
 def add_user(username, name, user_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO users (username, name, user_id) VALUES (%s, %s, %s)",
@@ -14,7 +12,7 @@ def add_user(username, name, user_id):
     conn.close()
 
 def get_user(user_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
     data = cursor.fetchall()
@@ -23,7 +21,7 @@ def get_user(user_id):
     return data
 
 def user_add_channel(user_id, channel_id):
-    conn = core.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "UPDATE users SET channels = %s WHERE user_id = %s",

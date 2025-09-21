@@ -1,25 +1,8 @@
-from mysql.connector import pooling
-import os
+from ..connection.connection import get_connection
 
 class MoviesDb:
     def __init__(self):
-        DB_CONFIG = {
-            "host": os.getenv("MYSQL_HOST"),
-            "user": os.getenv("MYSQL_USER"),
-            "password": os.getenv("MYSQL_PASSWORD"),
-            "database": os.getenv("MYSQL_DATABASE"),
-            "port": int(os.getenv("MYSQL_PORT", 3306))
-        }
-
-        self.pool = pooling.MySQLConnectionPool(
-            pool_name="mypool",
-            pool_size=20,
-            pool_reset_session=True,
-            **DB_CONFIG
-        )
-
-
-        conn = self.pool.get_connection()
+        conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -77,6 +60,3 @@ class MoviesDb:
         conn.commit()
         cursor.close()
         conn.close()
-    
-    def get_connection(self):
-        return self.pool.get_connection()

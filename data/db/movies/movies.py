@@ -1,10 +1,8 @@
-from .connection import MoviesDb
-
-moviesDb = MoviesDb()
+from ..connection.connection import get_connection
 
 
 def add_movie(movie_name, movie_year, movie_language, genres, url, description, rating):
-    conn = moviesDb.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -31,7 +29,7 @@ def add_movie(movie_name, movie_year, movie_language, genres, url, description, 
 
 
 def get_movie(movie_id):
-    conn = moviesDb.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "SELECT * FROM items WHERE id = %s", (movie_id,)
@@ -67,7 +65,7 @@ def get_movie(movie_id):
 
 
 def delete_movie(movie_code):
-    conn = moviesDb.get_connection()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "SELECT * FROM items WHERE id = %s", (movie_code,)
