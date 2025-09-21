@@ -31,8 +31,9 @@ async def movie_cancel_button_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     movie_code = movies.add_movie(movie_name=data["movie_name"], movie_year=data["movie_year"], movie_language=data["movie_language"], genres=data["movie_genres"], url=data["movie_url"], description=data['movie_description'], rating=data["movie_rating"])
     await message.answer(f"kino yuklandi ✅\n kino kodi: {movie_code}", reply_markup=ReplyKeyboardRemove())
+    await state.clear()
+    
     # await message.answer("Kino yaratish bekor qilindi ", reply_markup=ReplyKeyboardRemove())
-
 
 
 
@@ -156,7 +157,7 @@ async def get_movie_url_state_handler(message: Message, state: FSMContext):
             
         )
         await message.answer("Kino shunday ko'rinishda yuklanadi 👆🏻", reply_markup=cancel_or_upload)
-        await state.clear()
+        
     else:
         await message.answer("Hato yubordingiz ❗️ Iltimos qaytadan yuboring:")
 
