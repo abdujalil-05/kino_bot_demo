@@ -169,7 +169,7 @@ async def delete_movie_handler(call: CallbackQuery, state: FSMContext):
     await call.message.answer("🟢 Kino kodini yuboring:", reply_markup=cancel_movie_button)
     await state.set_state(DeleteMovieState.movie_id)
     check_state = await state.get_state()
-    print(check_state)
+    
 
 
 
