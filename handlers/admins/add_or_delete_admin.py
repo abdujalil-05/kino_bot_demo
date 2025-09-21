@@ -41,7 +41,7 @@ async def delete_admin_menu_handler(call: CallbackQuery):
     if admins:
         keyboard = delete_admin_inline_button(admins=admins)
         await call.message.edit_text("🟢 Adminlar ro'yhati:", reply_markup=keyboard)
-    print(admins)
+    
 
 
 
