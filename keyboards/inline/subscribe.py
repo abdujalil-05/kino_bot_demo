@@ -9,9 +9,9 @@ def generate_channels_keyboard(notSubscriptions):
     ])
 
     # ✅ "Tekshirish" tugmasi callback uchun
-    keyboard.inline_keyboard.append([
-        InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_subs")
-    ])
+    # keyboard.inline_keyboard.append([
+    #     InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_subs")
+    # ])
 
     return keyboard
 
