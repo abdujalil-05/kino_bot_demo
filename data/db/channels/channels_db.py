@@ -16,6 +16,7 @@ def get_channels():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM channels")
     data = cursor.fetchall()
+    
     cursor.close()
     conn.close()
     return data
@@ -37,6 +38,9 @@ def delete_user_left_channel(user_id, channels):
         f"UPDATE users SET channels = %s WHERE user_id = %s",
         (channels, user_id)
     )
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def add_bot_channel(channel_name, channel_id, username, channel_users_count):
     conn = get_connection()
