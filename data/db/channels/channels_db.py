@@ -104,7 +104,6 @@
 #     conn.close()
 
 
-
 from ..connection.connection import get_connection
 import time
 
@@ -118,6 +117,18 @@ _bot_channels_cache_time = 0
 CACHE_TTL = 3600  # 1 soat (sekundlarda)
 
 
+def _invalidate_channels_cache():
+    global _channels_cache, _channels_cache_time
+    _channels_cache = None
+    _channels_cache_time = 0
+
+
+def _invalidate_bot_channels_cache():
+    global _bot_channels_cache, _bot_channels_cache_time
+    _bot_channels_cache = None
+    _bot_channels_cache_time = 0
+
+
 def add_channel(channel_link, name, channel_id):
     with get_connection() as conn:
         with conn.cursor() as cursor:
@@ -126,18 +137,14 @@ def add_channel(channel_link, name, channel_id):
                 (channel_link, name, channel_id)
             )
         conn.commit()
-
-    # Cache yangilanadi
-    global _channels_cache, _channels_cache_time
-    _channels_cache = None
-    _channels_cache_time = 0
+    _invalidate_channels_cache()
 
 
 def get_channels():
     global _channels_cache, _channels_cache_time
     now = time.time()
 
-    if _channels_cache and now - _channels_cache_time < CACHE_TTL:
+    if _channels_cache is not None and now - _channels_cache_time < CACHE_TTL:
         return _channels_cache
 
     with get_connection() as conn:
@@ -158,11 +165,7 @@ def delete_channel(channel_id):
                 (channel_id,)
             )
         conn.commit()
-
-    # Cache yangilanadi
-    global _channels_cache, _channels_cache_time
-    _channels_cache = None
-    _channels_cache_time = 0
+    _invalidate_channels_cache()
 
 
 def delete_user_left_channel(user_id, channels):
@@ -183,18 +186,14 @@ def add_bot_channel(channel_name, channel_id, username, channel_users_count):
                 (channel_name, channel_id, username, channel_users_count)
             )
         conn.commit()
-
-    # Cache yangilanadi
-    global _bot_channels_cache, _bot_channels_cache_time
-    _bot_channels_cache = None
-    _bot_channels_cache_time = 0
+    _invalidate_bot_channels_cache()
 
 
 def get_bot_channels():
     global _bot_channels_cache, _bot_channels_cache_time
     now = time.time()
 
-    if _bot_channels_cache and now - _bot_channels_cache_time < CACHE_TTL:
+    if _bot_channels_cache is not None and now - _bot_channels_cache_time < CACHE_TTL:
         return _bot_channels_cache
 
     with get_connection() as conn:
@@ -215,10 +214,5 @@ def update_channel_users(channel_id, count):
                 (count, channel_id)
             )
         conn.commit()
-
-    # Cache yangilanadi
-    global _bot_channels_cache, _bot_channels_cache_time
-    _bot_channels_cache = None
-    _bot_channels_cache_time = 0
-
+    _invalidate_bot_channels_cache()
 
