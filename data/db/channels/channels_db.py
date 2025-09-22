@@ -1,4 +1,9 @@
 from ..connection.connection import get_connection
+import time
+
+_channels_cache = None
+_channels_cache_time = 0
+CACHE_TTL = 3600  # 1 soat (sekundlarda)
 
 def add_channel(channel_link, name, channel_id):
     conn = get_connection()
@@ -11,15 +16,40 @@ def add_channel(channel_link, name, channel_id):
     cursor.close()
     conn.close()
 
+
+
+
 def get_channels():
+    global _channels_cache, _channels_cache_time
+    now = time.time()
+    
+    # Agar cache bor va muddati tugamagan bo‘lsa → qaytaramiz
+    if _channels_cache and now - _channels_cache_time < CACHE_TTL:
+        return _channels_cache
+    
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM channels")
-    data = cursor.fetchall()
+    try:
+        cursor.execute("SELECT * FROM channels")
+        data = cursor.fetchall()
+        _channels_cache = data
+        _channels_cache_time = now
+        return data
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+# def get_channels():
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT * FROM channels")
+#     data = cursor.fetchall()
     
-    cursor.close()
-    conn.close()
-    return data
+#     cursor.close()
+#     conn.close()
+#     return data
 
 def delete_channel(channel_id):
     conn = get_connection()
