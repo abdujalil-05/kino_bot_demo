@@ -26,7 +26,6 @@ def delete_channel(channel_id):
     cursor.execute(
         f"DELETE FROM channels WHERE channel_id = {channel_id}",
     )
-    print("o'chirildi ----->")
     conn.commit()
     cursor.close()
     conn.close()
