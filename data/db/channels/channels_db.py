@@ -158,6 +158,7 @@ def get_channels():
 
 
 def delete_channel(channel_id):
+    print("a")
     with get_connection() as conn:
         with conn.cursor() as cursor:
             cursor.execute(
