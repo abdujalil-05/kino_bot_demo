@@ -35,7 +35,6 @@ def get_movie(movie_id):
         "SELECT * FROM items WHERE id = %s", (movie_id,)
     )
     movie_item = cursor.fetchall()
-    print("if           2")
     if movie_item != []:
         if movie_item[0][1]:
             movie_code = movie_item[0][3]
@@ -57,11 +56,11 @@ def get_movie(movie_id):
                 "is_movie": False
             })
             return data
-    return []
-
-    print(movie_item)
     cursor.close()
     conn.close()
+    return []
+    
+    
 
 
 def delete_movie(movie_code):
@@ -89,6 +88,8 @@ def delete_movie(movie_code):
         data_movie = cursor.fetchall()
         if data_item == data_movie:
             return True
+    cursor.close()
+    conn.close()
     return False      
 
 
