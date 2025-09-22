@@ -28,7 +28,8 @@ async def join_request_handler(request: ChatJoinRequest, bot: Bot):
     chat_id = str(request.chat.id)
 
     # DB'dan user kanallarini olish
-    user_channels_str = users_db.get_user(user_id=user.id)[0][4]
+    users = users_db.get_user(user_id=user.id)
+    user_channels_str = user[0][4] if users != [] else []
 
     # Toza listga aylantirish
     user_channels = parse_channels(user_channels_str)
