@@ -114,7 +114,7 @@ _channels_cache_time = 0
 _bot_channels_cache = None
 _bot_channels_cache_time = 0
 
-CACHE_TTL = 3600  # 1 soat (sekundlarda)
+CACHE_TTL = 60  # 1 soat (sekundlarda)
 
 
 def _invalidate_channels_cache():
