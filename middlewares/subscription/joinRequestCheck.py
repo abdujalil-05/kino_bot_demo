@@ -46,32 +46,26 @@ async def join_request_handler(request: ChatJoinRequest, bot: Bot):
 
 
 @join_request_check.chat_member()
-async def chat_member_handler(update: ChatMemberUpdated):
-    user = update.from_user
+async def bot_added_to_chat(update: ChatMemberUpdated):
     chat = update.chat
-
-    old_status = update.old_chat_member.status
     new_status = update.new_chat_member.status
+    old_status = update.old_chat_member.status
 
-    # 1️⃣ User qo'shildi
-    if old_status in ("left", "kicked") and new_status == "member":
-        get_user = users_db.get_user(user.id)
+    # faqat bot qo'shilganda
+    if update.new_chat_member.user.id == (await bot.me()).id:
+        if old_status in ("left", "kicked") and new_status in ("member", "administrator"):
+            # kanal yoki guruhga qo'shilgan
+            channel_name = chat.title
+            channel_id = chat.id
+            username = chat.username if chat.username else None
 
-        await update.bot.send_message(
-            chat.id,
-            f"👋 {user.full_name} guruhga qo'shildi!"
-        )
+            # foydalanuvchilar sonini olish (guruh yoki kanal bo‘lishi mumkin)
+            try:
+                members_count = await bot.get_chat_members_count(chat.id)
+            except Exception:
+                members_count = 0
 
-    # 2️⃣ User chiqib ketdi
-    elif old_status == "member" and new_status == "left":
-        await update.bot.send_message(
-            chat.id,
-            f"👋 {user.full_name} guruhdan chiqib ketdi."
-        )
+            # DB ga yozamiz
+            add_bot_channel(channel_name, channel_id, username, members_count)
 
-    # 3️⃣ User chiqarib yuborildi (ban)
-    elif new_status == "kicked":
-        await update.bot.send_message(
-            chat.id,
-            f"⛔️ {user.full_name} guruhdan chiqarildi."
-        )
+            await bot.send_message(chat.id, f"✅ Bot '{channel_name}' ga muvaffaqiyatli qo‘shildi!")
