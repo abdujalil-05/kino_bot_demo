@@ -15,7 +15,7 @@ DB_CONFIG = {
 
 pool = pooling.MySQLConnectionPool(
         pool_name="mypool",
-        pool_size=50,   # limitni oshirmang
+        pool_size=32,   # limitni oshirmang
         pool_reset_session=True,
         **DB_CONFIG
 )
