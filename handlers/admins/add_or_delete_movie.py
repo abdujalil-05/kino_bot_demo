@@ -74,7 +74,7 @@ async def get_movie_year_state_handler(message: Message, state: FSMContext):
 
 
 
-@router.message(AddMovieState.movie_language, Command(commands=["rus", "uzbek", "en"]))
+@router.message(AddMovieState.movie_language, Command(commands=["rus", "uzbek", "eng"]))
 async def get_movie_language_state_handler(message: Message, state: FSMContext):
     await state.update_data(
         {

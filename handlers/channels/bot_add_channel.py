@@ -1,46 +1,38 @@
-# from aiogram.types import ChatMemberUpdated
-# from aiogram import Router, Bot
-
-from data.db.channels import channels_db
-
-
-# router = Router()
 from aiogram import Router, Bot
 from aiogram.types import ChatMemberUpdated
 
+from data.db.channels import channels_db
+
 router = Router()
 
+# ✅ Bot guruhga yoki kanalga qo‘shilganda
 @router.my_chat_member()
-async def on_bot_added_to_chat(event: ChatMemberUpdated, bot: Bot):
-    chat = event.chat
-    old_status = event.old_chat_member.status
-    new_status = event.new_chat_member.status
+async def bot_added_to_chat(update: ChatMemberUpdated):
+    chat = update.chat
+    new_status = update.new_chat_member.status
+    old_status = update.old_chat_member.status
 
-    # faqat group, supergroup va channel uchun ishlash
-    if chat.type not in ("group", "supergroup", "channel"):
-        return
+    bot: Bot = update.bot  # bot obyektini olish
+    me = await bot.get_me()
 
-    # faqat qo'shilganda yozish: old_status = "left" va new_status in ("member", "administrator")
-    if old_status == "left" and new_status in ("member", "administrator"):
-        channels = channels_db.get_bot_channels()
+    # faqat botning statusi o'zgarganda
+    # if update.new_chat_member.user.id == me.id:
+    if old_status in ("left", "kicked") and new_status in ("member", "administrator"):
+            # kanal yoki guruhga qo'shilgan
+            channel_name = chat.title
+            channel_id = chat.id
+            username = chat.username if chat.username else None
 
-        # DB da bormi-yo‘qmi tekshirish
-        check = True
-        for channel in channels:
-            if chat.id == channel[3]:  # agar mavjud bo‘lsa yozilmasin
-                check = False
-                break
+            # foydalanuvchilar sonini olish
+            try:
+                members_count = await bot.get_chat_member_count(chat.id)
+            except Exception:
+                members_count = 0
 
-        if check:
-            count = await bot.get_chat_member_count(chat.id)
-            channels_db.add_bot_channel(
-                channel_name=chat.title,
-                channel_id=chat.id,
-                username=chat.username,
-                channel_users_count=count
-            )
+            # DB ga yozamiz
+            print("bot kanalga qo'shildi")
+            channels_db.add_bot_channel(channel_name, channel_id, username, members_count)
 
-        print(f"Bot qo‘shildi: {chat.title}")
-    else:
-        # boshqa status o‘zgarishlari uchun hech narsa qilinmaydi
-        print(f"Status o‘zgardi yoki chiqarildi: {chat.title} ({old_status} -> {new_status})")
+            # faqat guruhga xabar yuborish mumkin
+            if chat.type in ("group", "supergroup"):
+                await bot.send_message(chat.id, f"✅ Bot '{channel_name}' ga muvaffaqiyatli qo‘shildi!")
